@@ -10,24 +10,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.TarefasRepo;
+import com.example.demo.Services.TarefaServices;
 import com.example.demo.Tarefas;
 
 @RestController
 public class VerTudoController {
-
+	
 	@Autowired
-	private TarefasRepo tarefaRepo;
-
+	private TarefaServices tarefaService;
+	
 	@GetMapping("/listagem")
 	public ResponseEntity<?> VerTudoController() {
 
-		
-		List<Tarefas> tarefasLista = tarefaRepo.findAll();
-		return ResponseEntity.ok(  Map.of(
-                "message", "Lista de tarefas buscada com sucesso!",
-                "status", 200,
-                "data", tarefasLista
-        )
-	);	
+		List<Tarefas> tarefasLista = tarefaService.listar();
+		return ResponseEntity
+				.ok(Map.of("message", "Lista de tarefas buscada com sucesso!", "status", 200, "data", tarefasLista));
 	}
 }

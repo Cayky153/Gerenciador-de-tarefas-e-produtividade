@@ -12,26 +12,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Tarefas;
 import com.example.demo.TarefasRepo;
+import com.example.demo.Services.TarefaServices;
 
 @RestController
 public class DeletarController {
+	
 	@Autowired
-	private TarefasRepo tarefaRepo;
+	private TarefaServices tarefaService;
 	
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<?> deletarTarefa(@PathVariable Long id){
-		Tarefas tarefa = tarefaRepo.findById(id)
-		            .orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));	
+	
 		
-		tarefaRepo.deleteById(id);
-		
-		List<Tarefas> tarefasLista = tarefaRepo.findAll();	
+		List<Tarefas> tarefasDeletada = tarefaService.deletar(id);	
 		
 		
 		return ResponseEntity.ok(Map.of(
 	                "message", "Tarefa deletada com sucesso",
 	                "status", 200,
-	                "data", tarefasLista
+	                "data", tarefasDeletada
 	        ));
 	}
 }

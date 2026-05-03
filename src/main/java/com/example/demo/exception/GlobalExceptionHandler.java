@@ -14,31 +14,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity <ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex){
-		Map<String,String> errors= new HashMap<>();
-		ex.getBindingResult().getFieldErrors().forEach(
-				error ->
-				errors.put(error.getField(), error.getDefaultMessage()));
-		ErrorResponse errorResponse = new ErrorResponse(
-				LocalDateTime.now(),
-				HttpStatus.BAD_REQUEST.value(),
-				"Validation Error",
-				errors.toString()
-				);
-		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+	public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
+	    Map<String, String> errors = new HashMap<>();
+	    ex.getBindingResult().getFieldErrors().forEach(
+	        error -> errors.put(error.getField(), error.getDefaultMessage())
+	    );
+	    ErrorResponse errorResponse = new ValidationErrorResponse(errors.toString()); 
+	    return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
+
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<ErrorResponse> handleRuntime(RuntimeException ex) {
-
-	    ErrorResponse error = new ErrorResponse(
-	            LocalDateTime.now(),
-	            500,
-	            "Runtime Error",
-	            ex.getMessage()
-	    );
-
-	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	            .body(error);
+	    ErrorResponse errorResponse = new RuntimeErrorResponse(ex.getMessage()); 
+	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
 	}
 	
 }

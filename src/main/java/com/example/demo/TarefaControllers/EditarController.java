@@ -11,32 +11,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Tarefas;
 import com.example.demo.TarefasRepo;
+import com.example.demo.Services.TarefaServices;
 
 import jakarta.validation.Valid;
 
 
 @RestController
 public class EditarController {
+	
 	@Autowired
-	private TarefasRepo tarefaRepo;
+	private TarefaServices tarefaService;
 	
 	@PutMapping("/editar/{id}")
 	public ResponseEntity<?> editarTarefa(@PathVariable Long id,@Valid @RequestBody Tarefas tarefa) {
 		
 		
-		Tarefas existingData = tarefaRepo.findById(id)
-				.orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
-		
-			existingData.setTitulo(tarefa.getTitulo());
-			existingData.setDescricao(tarefa.getDescricao());
-			existingData.setTipo(tarefa.getTipo());
-			existingData.setPrioridade(tarefa.getPrioridade());
-			
-			tarefaRepo.save(existingData);
+		Tarefas novaData = tarefaService.editar(id, tarefa);
 			return ResponseEntity.ok(Map.of(
 	                "message", "Tarefa atualizada com sucessp",
 	                "status", 200,
-	                "data", existingData
+	                "data", novaData
 	        ));
 	}
 }
